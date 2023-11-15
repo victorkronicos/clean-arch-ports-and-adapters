@@ -8,7 +8,11 @@ export default class LoginUsuarioController{
         casoDeUso: LoginUsuario
     ){
 
-        servidor.post('/api/usuarios/login', async(req, resp) => {
+        servidor.post('/api/usuarios/login', async(req, resp, next) => {
+            resp.status(404).send()
+            next()
+        },
+        async(req, resp) => {
 
             try{
                  const usuario = await casoDeUso.executar({
@@ -18,10 +22,7 @@ export default class LoginUsuarioController{
 
                 const providerJwt = new ProvedorJwt(process.env.JWT_SECRET!)
     
-                resp.status(200).send({
-                    usuario,
-                    token: providerJwt
-                })
+                resp.status(200).send(providerJwt.gerar(usuario))
             } catch(erro: any){
                 resp.status(400).send(erro.message)
             }

@@ -1,5 +1,3 @@
-
-
 import dotenv from 'dotenv'
 dotenv.config()
 
@@ -10,6 +8,9 @@ import RegistrarUsuario from './core/usuario/service/RegistrarUsuario';
 import RegistrarUsuarioController from './external/api/RegistrarUsuarioController';
 import LoginUsuarioController from './external/api/LoginUsuarioController';
 import LoginUsuario from './core/usuario/service/LoginUsuario';
+import ObterProdutoPorIdController from './external/api/ObterProdutoPorIdController';
+import ObterProdutoPorId from './core/produto/service/ObterProdutoPorId';
+import UsuarioMiddleware from './external/api/UsuarioMiddleware';
 
 const app = express()
 
@@ -40,3 +41,10 @@ const loginUsuario = new LoginUsuario(
 
 new RegistrarUsuarioController(app, registrarUsuario)
 new LoginUsuarioController(app, loginUsuario)
+
+
+// -------------------------------- Rotas Protegidas
+const usuarioMid = UsuarioMiddleware(repositorioUsuario)
+
+const obterProdutoPorId = new ObterProdutoPorId()
+new ObterProdutoPorIdController(app, obterProdutoPorId, usuarioMid)
